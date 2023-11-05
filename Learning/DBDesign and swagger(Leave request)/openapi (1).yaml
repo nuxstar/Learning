@@ -1,0 +1,164 @@
+openapi: 3.0.3
+info:
+  title: Leave request module 
+  version: 1.0"
+paths:
+  /employee/managerId:
+    post:
+      summary: Add a new employee
+      description: Add a new employee
+      operationId: managerId
+      requestBody:
+        description: Create a new employee 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/employee'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/employee'          
+        '405':
+          description: Invalid input
+  /getLeaves/managerIds:
+    get:
+      summary: Finds leave by managerId
+      operationId: managerIds
+      parameters:
+        - name: status
+          in: query
+          description: Status values that need to be considered for filter
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: available
+            enum:
+              - available
+              - pending
+              - sold
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/leaveLog'          
+        '400':
+          description: Invalid status value
+  /applyLeave:
+    post:
+      summary: apply a leave
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/leaveLog'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/leaveLog'
+        '405':
+          description: Invalid input
+components:
+  schemas:
+    employee:
+      type: object
+      properties:
+        employeeId:
+          type: integer
+          format: int64
+          example: 1
+        employeeName:
+          type: string
+          example: employee
+        employeeMail:
+          type: string
+          example: user@gmail.com
+        designation:
+          type: string
+          example: "employee"
+        managerId:
+          type: integer
+          example: 1
+      xml:
+        name: employee
+    applyLeave:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        leaveType:
+          type: string
+          example: sick
+        reason:
+          type: string
+          example: reason
+        start_Date:
+          type: string
+          example: start_date
+        end_Date:
+          type: string
+          example: end_date
+        employeeId:
+          type: integer
+          example: 1
+        managerId:
+          type: integer
+          example: 1
+      xml:
+        name: applyLeave
+    leaveLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        employeeId:
+          type: integer
+          example: 1
+        employeeName:
+          type: string
+          example: user
+        leaveType:
+          type: string
+          example: sick
+      xml:
+        name: leaveLog
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
+  requestBodies:
+    employee:
+      description: Pet object that needs to be added to the store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/employee'
+    UserArray:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/employee'
